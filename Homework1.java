@@ -35,8 +35,8 @@ public class Homework1 {
     
     public static void main(String[] args) {
         // TODO code application logic here
-        //if (args.length > 0) {
-            String input = "578+-5*";
+        if (args.length > 0) {
+            String input = args[0];
             Homework1 h1=new Homework1();
             Node root=h1.constructTree(input);
             h1.inorder(root);
@@ -47,9 +47,7 @@ public class Homework1 {
                     frame.setVisible(true);
                 }
             });
-            
-            
-	//}
+	}
     }
     
     Node constructTree(String input){
