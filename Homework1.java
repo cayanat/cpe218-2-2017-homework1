@@ -1,5 +1,16 @@
 
 import java.util.Stack;
+import java.awt.EventQueue;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+
 class Node {
     Node left;
     Node right;
@@ -24,13 +35,21 @@ public class Homework1 {
     
     public static void main(String[] args) {
         // TODO code application logic here
-        if (args.length > 0) {
-            String input = args[0];
+        //if (args.length > 0) {
+            String input = "578+-5*";
             Homework1 h1=new Homework1();
             Node root=h1.constructTree(input);
             h1.inorder(root);
             h1.calculator(input);
-	}
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    MyForm frame = new MyForm(h1,root,input);
+                    frame.setVisible(true);
+                }
+            });
+            
+            
+	//}
     }
     
     Node constructTree(String input){
@@ -89,6 +108,14 @@ public class Homework1 {
         }      
         tree=s.pop();
         System.out.print(" = "+tree.key);
+    }
+    DefaultMutableTreeNode inorderII(Node r){
+        DefaultMutableTreeNode item = new DefaultMutableTreeNode(r.data);
+        if(r!=null && r.left!=null && r.right!=null){
+            item.add(inorderII(r.left));
+            item.add(inorderII(r.right));
+        }
+        return item;
     }
     void inorder(Node r){
         if(r!=null){
@@ -149,4 +176,49 @@ public class Homework1 {
             }
         }
     }
+}
+
+class MyForm extends JFrame {
+
+	public MyForm( Homework1 h1,Node root,String input) {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 362, 249);
+		setTitle("ThaiCreate.Com Java GUI Tutorial");
+		getContentPane().setLayout(null);
+		
+		// Tree
+		final JTree tree = new JTree(h1.inorderII(root));
+		tree.setBounds(28, 11, 209, 131);
+
+		// Scroll Pane
+		JScrollPane scroll = new JScrollPane();
+		scroll.setBounds(28, 11, 209, 169);
+
+		// Image Icon
+		/*ImageIcon imageIcon = new ImageIcon(getClass().getResource("open.gif"));
+		DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+		renderer.setLeafIcon(imageIcon);
+
+		tree.setCellRenderer(renderer);
+		tree.setShowsRootHandles(true);
+		tree.setRootVisible(false);
+*/
+		// Add Scroll and Tree
+		scroll.setViewportView(tree);
+		getContentPane().add(scroll);
+
+		// Selected
+		tree.getSelectionModel().addTreeSelectionListener(
+				new TreeSelectionListener() {
+					@Override
+					public void valueChanged(TreeSelectionEvent e) {
+						DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree
+								.getLastSelectedPathComponent();
+
+						JOptionPane.showMessageDialog(null, selectedNode
+								.getUserObject().toString());
+					}
+				});
+
+	}
 }
